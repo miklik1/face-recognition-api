@@ -9,11 +9,13 @@ const saltRounds = 10;
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
+    connectionStrin: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+    host: process.env.DATABASE_HOST,
     port: 5432,
-    user: "postgres",
-    password: "615243",
-    database: "smart-brain",
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PW,
+    database: process.env.DATABASE_DB,
   },
 });
 
@@ -25,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Sign In Route
 app.post("/signin", (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   const { email, password } = req.body;
 
   db.select("email", "hash")
@@ -45,7 +47,7 @@ app.post("/signin", (req, res) => {
       }
     })
     .catch(() => res.status(400).json("Wrong credentials"));
-  console.log(res.body)
+  console.log(res.body);
 });
 
 // Register Route
